@@ -1,0 +1,15 @@
+# Nix build outputs
+result
+result-*
+
+# Typst output
+*.pdf
+!resources/**/*.pdf
+
+# direnv
+.direnv/
+
+# Editor
+.vscode/
+.idea/
+*.swp
