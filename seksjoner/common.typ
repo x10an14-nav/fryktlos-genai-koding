@@ -29,6 +29,36 @@
   link(url, text(fill: fill, underline(shown)))
 }
 
+// "Skjevt klistremerke" — Twemoji SVG plassert med rotasjon for å
+// gi et uproft, overklistret uttrykk. Bruker `place()` relativt til
+// nærmeste block; plasser derfor enten helt øverst i sliden (før
+// align-blokker) eller bruk `anchor` som er utenfor hovedinnholdet.
+// Filer under `assets/stickers/`, navnet uten .svg:
+//   sticker("1f389")                       → 🎉, default top+left, 0deg
+//   sticker("1f631", anchor: top+right, dx: -1em, dy: 0.5em, angle: 12deg, size: 3em)
+// Kilde: Twemoji (CC-BY 4.0, github.com/jdecked/twemoji)
+#let sticker(
+  name,
+  anchor: top + left,
+  dx: 0pt,
+  dy: 0pt,
+  angle: 0deg,
+  size: 3em,
+  mirror: false,
+) = place(
+  anchor,
+  dx: dx,
+  dy: dy,
+  rotate(angle, reflow: false, scale(
+    x: if mirror { -100% } else { 100% },
+    reflow: false,
+    image(
+      "../assets/stickers/" + name + ".svg",
+      height: size,
+    ),
+  )),
+)
+
 // Emoji-badge plassert vertikalt midsentrert på høyre kant av sliden.
 // Brukes som visuelt refreng for prompt-teknikker. Se NOTES.md
 // §"Kurert teknikk-liste" for mapping mellom emoji og teknikk.

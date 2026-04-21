@@ -15,6 +15,11 @@
       # Typst with packages pinned from nixpkgs' typstPackages mirror of
       # Typst Universe. Add new packages here as your slides start using them.
       typstWithPkgsFor = pkgs: pkgs.typst.withPackages (tp: [ tp.touying_0_5_3 ]);
+
+      # Python med pikepdf, brukt av tools/inject-notes.py for å
+      # injisere speaker-notes som PDF text-annotations. Lar pdfpc lese
+      # notatene uten sidecar-fil.
+      pythonWithPdfToolsFor = pkgs: pkgs.python3.withPackages (ps: [ ps.pikepdf ]);
     in
     {
       devShells = eachSystem (pkgs: {
@@ -54,6 +59,22 @@
             ''
           );
         };
+        bygg-notater = {
+          type = "app";
+          # Watch-modus som `bygg`, men med --input notes=true slik at
+          # speaker-notes rendres ved siden av hver slide. Skriver til
+          # slides-med-notater.pdf for å ikke kollidere med presentasjons-
+          # PDF-en (slides.pdf) som `utkast` viser.
+          program = toString (
+            pkgs.writeShellScript "bygg-lysark-notater" ''
+              exec ${lib.getExe (typstWithPkgsFor pkgs)} watch \
+                --root "$PWD" \
+                --input notes=true \
+                "$PWD/slides.typ" \
+                "$PWD/slides-med-notater.pdf"
+            ''
+          );
+        };
         utkast = {
           type = "app";
           # Opens $PWD/slides.pdf in zathura, which auto-reloads on file
@@ -68,8 +89,35 @@
 
       packages = eachSystem (pkgs: rec {
         default = lysark;
+        # `lysark` har speaker-notes innebygd som PDF text-annotations:
+        # touying emitter `<pdfpc-file>`-metadata via `typst query`, og
+        # tools/inject-notes.py (pikepdf) legger notatene inn i PDF-en.
+        # pdfpc leser dem som "native" notater uten sidecar-fil.
         lysark =
           pkgs.runCommand "slides.pdf"
+            {
+              nativeBuildInputs = [
+                (typstWithPkgsFor pkgs)
+                (pythonWithPdfToolsFor pkgs)
+              ];
+            }
+            # Bash
+            ''
+              typst compile \
+                --format pdf \
+                --root ${repoRoot} \
+                ${repoRoot}/slides.typ \
+                slides-raw.pdf
+              typst query \
+                --root ${repoRoot} \
+                --field value --one \
+                ${repoRoot}/slides.typ '<pdfpc-file>' \
+                > slides.pdfpc.json
+              python3 ${repoRoot}/tools/inject-notes.py \
+                slides-raw.pdf slides.pdfpc.json $out
+            '';
+        lysark-med-notater =
+          pkgs.runCommand "slides-med-notater.pdf"
             {
               nativeBuildInputs = [ (typstWithPkgsFor pkgs) ];
             }
@@ -78,6 +126,7 @@
               typst compile \
                 --format pdf \
                 --root ${repoRoot} \
+                --input notes=true \
                 ${repoRoot}/slides.typ \
                 $out
             '';

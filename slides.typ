@@ -42,6 +42,12 @@
 
 #let repo-url = "github.com/x10an14/fryktlos-genai-koding"
 
+// Toggle for å bygge med speaker notes synlig. Settes via
+//   typst compile --input notes=true slides.typ ...
+// eller `nix run .#bygg-notater` (se flake.nix). Default: false →
+// notater er usynlige (normal presentasjons-PDF).
+#let with-notes = sys.inputs.at("notes", default: "false") == "true"
+
 #let cumulative-section-slide(
   title: utils.i18n-outline-title,
   body,
@@ -114,6 +120,9 @@
     // av section-slide-fn og rendret på samme side som ToC. Vi vil
     // ha ToC som egen slide og body som egen slide.
     receive-body-for-new-section-slide-fn: false,
+    // Når notes-flag er satt, rendrer touying notatene ved siden av
+    // sliden (dobbel bredde). Utmerket for speaker-laptop / handout.
+    show-notes-on-second-screen: if with-notes { right } else { none },
   ),
   config-colors(
     primary: nav-red,
@@ -243,19 +252,13 @@
 #title-slide()
 
 #speaker-note[
-  Muntlig åpning før du blar videre til ToC:
+  *[\~60s → 01:00]*
 
-  «Noen andre her som synes det virker nytt, spennende, og kanskje
-   noe skummelt med GenAI? Sikkerhet? Vedlikeholdbarhet? Eierskap
-   til koden? Best practice?»
+  - Åpning: håndsopprekk på GenAI-skepsis (sikkerhet, vedlikehold, eierskap, best practice)
 
-  Håndsopprekking valgfritt — uansett retorisk effekt. Så:
+  - Tease: timet batch til streaming på første forsøk, ytelse opp, ressurs ned
 
-  «Hva om jeg fortalte dere at på mitt første forsøk fikk jeg til
-   å omskrive en evig-varende timet batch-jobb til streaming — og
-   dermed kraftig økt ytelse og kraftig senket ressursforbruk?»
-
-  (Detaljer/tall kommer i Motivasjon-bolken; ikke spoil her.)
+  - Ikke spoil tall
 ]
 
 #include "seksjoner/01-kort-om-meg.typ"

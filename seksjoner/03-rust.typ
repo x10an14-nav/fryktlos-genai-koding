@@ -5,6 +5,7 @@
 == Første refaktor-bølge
 
 #badge("🧹")
+#sticker("1f4aa", anchor: bottom + left, dx: 1em, dy: -1.2em, angle: -12deg, size: 2.8em)
 
 #align(horizon)[
   #grid(
@@ -30,9 +31,10 @@
       #set text(size: 0.9em)
       - Fra per-gruppe `BaseConsumer` (~15–30 MB per)
         - til *én* delt `AdminClient`
-      - Approach lånt fra #gh("seglo/kafka-lag-exporter", code: true)
-      - Admin API manglet i `librdkafka`
-        - Forket fra #gh("fede1024/rust-rdkafka", code: true)
+      - Angrepsvinkel lånt fra
+        - #gh("seglo/kafka-lag-exporter", code: true)
+      - Admin API manglet i `rust-rdkafka`
+        - Forket fra \ #gh("j-santander/rust-rdkafka", code: true)
     ],
   )
 
@@ -50,29 +52,23 @@
 ]
 
 #speaker-note[
-  Før noe GenAI fikk lov til å gjøre noe stort, brukte jeg en
-  kveld på å få koden til å tilfredsstille clippy med pedantic,
-  nursery og unwrap_used. Sitatet "lar meg bli kjent med koden"
-  er direkte fra commit-meldingen — før GenAI fikk gjøre noe.
-  Det høres trivielt ut, men to ting:
-  (a) det lar meg bli kjent med koden, (b) det etablerer et sterkt
-  utgangspunkt — når kompilatoren og linters er fornøyd, blir
-  hver senere endring tydeligere. AI-en kan ikke gjemme slurv i
-  støy.
+  *[\~75s → 08:15]*
 
-  Så kom første store grep: per-gruppe BaseConsumer var den
-  dominerende minne-kilden. Jeg visste fra `seglo/kafka-lag-exporter`
-  (Scala, arkivert) at det fantes en bedre approach via Admin API.
-  Problemet: den rdkafka-forken alle brukte hadde ikke Admin API.
-  En fork av rdkafka hadde bindings-ene — fra j-santander, en
-  annen NAV-er. Jeg rebased den på master og tok den i bruk.
-  Resultat: 220 linjer unsafe FFI borte, null unsafe blocks igjen
-  i vår kode.
+  - Clippy pedantic/nursery/unwrap_used før AI slapp til
 
-  Tør tørre å forkaste avhengigheter — ellers sitter du fast.
+  - «Lar meg bli kjent med koden» (fra commit-melding)
+
+  - Admin API manglet i rust-rdkafka — forket fra j-santander (annen NAV-er), rebased master
+
+  - Resultat: 220 linjer unsafe borte, null unsafe igjen
+
+  - Tørr å forkaste avhengigheter
 ]
 
 == Etter denne: fortsatt 943 MiB per pod
+
+#sticker("1f630", anchor: bottom + left, dx: 2em, dy: -2em, angle: -10deg, size: 2.8em)
+#sticker("1f9d0", anchor: bottom + right, dx: -2em, dy: -2em, angle: 12deg, size: 2.6em)
 
 #align(center + horizon)[
   #text(size: 1.1em)[
@@ -92,22 +88,19 @@
 ]
 
 #speaker-note[
-  Admin API-grepet fjernet den dominerende minne-kilden — men på
-  vår største Kafka-klynge (nav-dev-kafka, ~1 400 topics,
-  ~4 600 topic-ACL-er) klatret pod-en fortsatt over 900 MiB og
-  fortsatte å vokse. Ikke "O(concurrent_groups × 25 MB)" lenger,
-  men fortsatt noe som vokste med volumet.
+  *[\~60s → 09:15]*
 
-  Her begynner timingen å bli interessant: det er lørdag kveld,
-  19. februar, rundt 21:30. Jeg har Claude ved siden av meg og
-  en file-watcher i en terminal som re-kompilerer og kjører tester
-  hver gang jeg lagrer. Jeg har allerede brukt dagen på Admin
-  API-refaktoren. Neste skritt trenger et nytt grep.
+  - Admin API fjernet dominerende kilde
+
+  - nav-dev-kafka: ca 1400 topics, ca 4600 ACL-er, pod over 900 MiB og fortsatt voksende
+
+  - Setting: torsdag kveld 19 februar, Claude + file-watcher, dag brukt på Admin API
 ]
 
 == Dagen det snudde
 
 #badge("👁", "🔍")
+#sticker("1f4a1", anchor: top + left, dx: 0.8em, dy: 0.8em, angle: -15deg, size: 3.4em)
 
 #align(center + horizon)[
   #image("../assets/grafana/minnebruk-24t-overgang.png", height: 77%)
@@ -129,30 +122,23 @@
 ]
 
 #speaker-note[
-  Grafen viser 24 timer fra klag-exporter på nav-dev-kafka. Tidlig
-  på døgnet: eskalering, eskalering, eskalering — hver pod vokser
-  til ~32 GiB før den dør og restartes. Rundt 22:00 (merk: y-aksen
-  her er relativ, x-aksen er 24t) kommer deploy-en av d99f656.
-  Hakkete konvergens gjennom natten, så flater ut på rundt 500–900 MiB.
+  *[\~90s → 10:45]*
 
-  Hva skjedde i d99f656? Tre ting samtidig, alle foreslått av LLM-en
-  og verifisert av kompilatoren + tester:
+  - 24t graf. Tidlig: eskalering til ca 32 GiB, OOM, restart
 
-  (1) Streaming pipeline: hver cycle hadde tidligere materialisert
-      ALLE gruppe-data i minnet før noe ble prosessert. Nå: per-gruppe
-      pipeline, maks N in-flight.
+  - d99f656 deploys. Hakket natt, utflating 500–900 MiB
 
-  (2) `describe_consumer_groups` chunked (default 500) — brokeren
-      ble DDOS-et av ett enkelt RPC med 10k+ gruppe-ID-er.
+  - d99f656 = 3 ting samtidig:
 
-  (3) Målrettet watermark-henting: før hentet vi watermarks for hver
-      partition som eksisterte i clusteret (100k+). Nå bare for
-      partisjoner vi faktisk overvåker.
+    - streaming pipeline, maks N in-flight
 
-  Prompt-teknikk: kompilatoren + testene i file-watch-terminalen var
-  agentens feedback loop. Jeg la opp reglene før vi begynte: agenten
-  får ikke committe, får ikke kjøre git, må stoppe og vente på meg
-  før neste steg. Jeg leste hvert forslag. `git add -p` på alt.
+    - describe_consumer_groups chunked (default 500)
+
+    - målrettet watermark-henting (kun overvåkede partisjoner)
+
+  - Prompt-teknikk: kompilator + tester = agentens feedback loop
+
+  - Regler: ingen commit, ingen git, stopp og vent. `git add -p` på alt.
 ]
 
 == Tuning-dagen etterpå
@@ -177,27 +163,19 @@
 ]
 
 #speaker-note[
-  Timen etter d99f656. Hver røde stiplede linje er en ny deploy —
-  altså en ny hypotese test-run. Orange pod lever 5 minutter, vokser
-  til 160 %, dør. Grønn kommer opp, klatrer jevnt. Blå overtar,
-  klatrer kontinuerlig med støy. Så yellow tar over og viser helt
-  annet mønster: rask sprett til ~140 %, plateau i 8 minutter, ett
-  steg opp, plateau igjen.
+  *[\~75s → 12:00]*
 
-  Poenget: prosessering må rekke ferdig innenfor 20–30 sekunder per
-  cycle (neste vindu). Ikke bare minne — CPU-spikes viser hvor nær
-  kanten vi var. Fire deploys på under en time for å lande det.
+  - Timen etter d99f656. Røde linjer = deploys = hypoteser
 
-  Prompt-teknikk: flotte kompilator-feilmeldinger. Rust forteller
-  deg _eksakt_ hva som er galt, hvor, og ofte hvordan du fikser det.
-  Når AI foreslår en endring som bryter typene, ser jeg det i loopen
-  før jeg i det hele tatt trenger å lese forslaget nøye. Det er
-  billig iterasjon — og det skalerer langt forbi det Python eller
-  TypeScript ville gitt meg med samme tempo.
+  - Mønstre: orange 5 min til 160%, grønn jevnt, blå støy, yellow plateau
 
-  Foreshadowing: dette bilde viser _memory + CPU_ — begge i prosent
-  av requested. Minne var den store gevinsten. CPU-spikes er neste
-  bolk's problem.
+  - Må rekke prosessering i 20–30 sek per cycle
+
+  - 4 deploys under en time
+
+  - Prompt-teknikk: Rust-typefeedback raskt, billig iterasjon
+
+  - Foreshadowing: CPU-spikes = neste bolks problem
 ]
 
 == Etterslep: kompilatoren hjalp, og der den IKKE gjorde det
@@ -222,7 +200,7 @@
       #text(size: 0.75em, style: "italic")[`b2477a7` · 17:25]
     ],
     [OK — blindt over FFI-grensen],
-    [*panic + stacktrace* i test-loop],
+    [*panic + stacktrace* i testmiljø],
     [
       *Silent data loss* \
       #text(size: 0.75em, style: "italic")[`4e2d9e3` · neste dag 15:41]
@@ -247,44 +225,41 @@
 ]
 
 #speaker-note[
-  Tre etterslep-commits, tre forskjellige fangstmekanismer:
+  *[\~90s → 13:30]*
 
-  (1) Double-free: AI foreslo en endring i rust-rdkafka-forken vår
-      som frigjorde det samme C-objektet to ganger. Rust-kompilatoren
-      aksepterte koden fordi alt var pakket inn i `unsafe extern "C"` —
-      ingenting å verifisere eierskap på. Det som fanget det var
-      en segfault i test-loopen. Læringspunkt: når du krysser FFI-grensen,
-      mister du kompilatorens garantier.
+  - Double-free: unsafe extern "C", kompilator fanget ikke, segfault i test
 
-  (2) Silent data loss: en dag senere oppdager jeg at
-      `kafka_consumergroup_group_lag` viser 0 trass i reell lag.
-      Grunnen: `Offset::from_raw(-1)` produserer `Offset::End`,
-      ikke `Offset::Offset(-1)`. Match-en var syntaktisk perfekt,
-      og kompilatoren hadde null å klage på. Det som fanget det var
-      logging på ekte cluster. Feedback loop ≠ kun kompilator.
+    - FFI-grense = mister garantier
 
-      Nyanse for de teknisk interesserte: Rust arver sumtyper og
-      exhaustive pattern matching fra Hindley-Milner-familien
-      (OCaml, Haskell). En full `match` ville tvunget håndtering
-      av `Offset::End`-varianten — men `if let` opt-er eksplisitt
-      ut av exhaustivity. Garantien fantes; konstruksjonen omgikk
-      den. Typesystemet beskytter mer enn bare minne.
+  - Silent data loss: `Offset::from_raw(-1)` = `Offset::End`, `if let` opt-et ut av exhaustivity
 
-  (3) Neg cache + cross-group dedup: logger viste at 93 % av cycle
-      gikk til timestamp-henting. 255 fetches, 82 unike. AI foreslo
-      to cache-lag; kompilatoren og testene godkjente, produksjonsdata
-      bekreftet. Dette er normalfallet der hele verktøykjeden
-      jobber sammen.
+    - Fanget av prod-logging. Feedback loop ≠ kun kompilator
 
-  Overgangen til bolk 2: kompilatorens grenser er der Rust møter
-  `librdkafka`. Neste bolk går dypere inn i FFI-kanten.
+    - Nyanse: full `match` ville tvunget håndtering
+
+  - Neg cache + dedup: 93% i timestamp, 255 fetches, 82 unike
+
+    - AI foreslo, kompilator/tester/prod bekreftet
+
+  - Overgang bolk 2: kompilatorens grense = FFI-kanten
 ]
 
 == Agent sikringsteknikker
 
 #teknikk-tabell(introdusert: ("🧹", "👁", "🔍", "🚨"))
 
+#speaker-note[
+  *[\~30s → 14:00]*
+
+  - 🧹 opprydding · 👁 overvåk · 🔍 mål · 🚨 alarm
+
+  - Peke tilbake, ikke forklare på nytt
+]
+
 == Detektivrydderen
+
+#sticker("1f3c6", anchor: top + right, dx: -1em, dy: 0.8em, angle: 15deg, size: 3.4em)
+#sticker("1f9f9", anchor: bottom + left, dx: 0.8em, dy: -1em, angle: -10deg, size: 2.4em)
 
 #align(horizon)[
   #set text(size: 0.95em)
@@ -296,28 +271,28 @@
     text(weight: "bold", fill: nav-red)[Stor refaktor —],
     [Per-gruppe `BaseConsumer` → delt `AdminClient`. \
     220 linjer `unsafe` FFI borte på én kveld. \
-    Streaming pipeline vs batch jobbing \ → per-gruppe, maks N in-flight.],
-    text(weight: "bold", fill: nav-red)[Agent implementerte cache —],
-    [Logger viste `stream_metrics_ms` = 93 % av tidsforbruket. \
-    Cross-group dedup + negativ cache foreslått av agenten.],
+    Streaming pipeline vs batch jobbing → per-gruppe, maks N in-flight.],
+    text(weight: "bold", fill: nav-red)[Stor optimalisering —],
+    [Logger viste `stream_metrics_ms()` = 93 % av tidsforbruket. \
+    Cross-group dedup + negativ cache foreslått og implementert av AI.],
     text(weight: "bold", fill: nav-red)[Sentinel-jakt —],
     [Metrikken viste 0 trass i reell lag. \
-    Agenten sporet opp "off by 1" feil i `librdkafka`-forken.],
+    Agenten sporet opp sentinel-verdi-tolkning i `rust-rdkafka`-forken.],
   )
 
   #v(1em)
 
   #align(center)[
     #text(size: 1.05em, style: "italic")[
-      Arbeidet hadde blitt gjort uansett — men ikke på én helg.
+      Arbeidet hadde blitt gjort uansett — men ikke på ~helg.
     ]
   ]
 ]
 
 #speaker-note[
-  TODO: stram innhold etter formatbeslutning. Tre kategori-eksempler
-  her er direkte fra klag-commits.txt; kan trimmes til to hvis det
-  blir for tett. "Arbeidet hadde vært gjort uansett — men ikke på én
-  helg" er utkast til payoff-linje — bytt ut hvis bedre formulering
-  finnes.
+  *[\~60s → 15:00]*
+
+  - Tre kategorier fra klag-commits: stor refaktor, stor optimalisering, sentinel-jakt
+
+  - Payoff: «hadde blitt gjort uansett, men ikke på en helg»
 ]

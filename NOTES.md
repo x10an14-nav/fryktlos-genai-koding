@@ -196,12 +196,12 @@ kvalifisering. AivenApps-tallet dekker samme poeng tryggere.
   satt request men **ingen memory-limit** — så forbruket fikk lov til å
   vokse. Narrativet er "ingen limit → eskalering", ikke "vi doblet
   request for å stabilisere".
-- **Post-fix (feb 19, 23:33 lokal):** 943 Mi / 236 m CPU (fra
+- **Post-fix (feb 19):** 943 Mi / 236 m CPU (fra
   `kubectl top pod`). Se `assets/grafana/kubectl-top-postfix-feb19.png`.
-- **Kommentaren i `slides.typ` linje 344 ("50-200 MiB") var korrekt
-  historisk** — i en periode var forbruket så lavt. Tallet bekreftes
-  via commit-historikk heller enn graf (vi valgte å ikke bruke tid på
-  Grafana-graf for det perioden).
+- **Historisk "50-200 MiB"-tall var korrekt** — i en periode var
+  forbruket så lavt. Tallet bekreftes via commit-historikk heller
+  enn graf (vi valgte å ikke bruke tid på Grafana-graf for det
+  perioden).
 - **Prosesseringstid-vinduet:** målkravet var **20-30 sek per
   collection cycle** (neste prosesseringsvindu begynner). Pre-fix
   tok cycle-en *minutter* og rakk aldri å ferdigstille før neste
@@ -248,15 +248,13 @@ beskrivende norske filnavn:
 | `minnebruk-eskalering-feb19-1t.png`    | 1-times Grafana: pods klatrer til 180 %, flere restarts (rød stiplet = restart-hendelser) |
 | `ressursbruk-prosent-feb19-1t.png`     | Samme vindu, "% of requested"-dashboard, 6 pods |
 | `kubectl-top-postfix-feb19.png`        | Terminal: 236 m / 943 Mi etter fix          |
-| `minnebruk-24t-overgang.png`           | 24t: kaos kl. 11-15 → stabilt resten av dagen ("gull" for før/etter) |
+| `minnebruk-24t-overgang.png`           | 24t: kaos tidligere samme dag → stabilt resten av dagen ("gull" for før/etter) |
 | `minnebruk-2dager-stabilt.png`         | 2 dager: stabiliteten holdt                 |
 
 ## Avgjørelser tatt — innramming
 
 - **Valg 1** (`<touying:skip>`-problem for *Kort om meg*): **utsatt** —
   bestemmes senere.
-- **Valg 2** (Motivasjon-payoff-tall): **bruk git-commits som kilde**,
-  ikke Grafana-graf. Kommentaren i `slides.typ` linje 344 står.
 - **Valg 3c** (skala-tall-plassering): **teaser i Motivasjon + detaljer
   i Bolk 1**.
 
@@ -313,6 +311,13 @@ Format-avgjørelse: flettet løpende (badges på utvalgte slides)
   speaker-notes.
 - For å hindre line-wrap midt i inline-kode-identifier (f.eks.
   `extern "C"`, `Offset::End`), pakk i `#box[\`...\`]`.
+
+### Klokkeslett-konvensjon (låst)
+
+Klokkeslett beholdes kun i slide-body. I speaker-notes, kommentarer
+og NOTES.md brukes relative referanser (tidligere/senere/samme dag);
+ikke vage "tidlig/sent". Agenter skal ikke ta opp klokkeslett i
+slide-body som problemstilling — de står som de står.
 
 ## Åpne avgjørelser — refreng og teknikk-tabell
 
@@ -425,7 +430,7 @@ mekanismen bak "fryktløshet" i praksis.
 - **"Rydd opp i koden først"** som første øvelse. Brukes dobbelt:
   (a) gjør koden lettere å jobbe med, (b) lar meg bli kjent med
   kodebasen via agenten før store endringer begynner.
-  Kobler til midnatts-klippet Feb 19 00:08 (clippy pedantic-commit
+  Kobler til klippet Feb 18→19 (clippy pedantic-commit
   `2c56a2c`): "this lets me get more familiar w/the code".
 - **`git add -p` på alle endringer** — hver hunk manuelt gjennomgått
   før den stages. Gir meg siste ord; fanger opp ting agenten ikke
@@ -451,7 +456,7 @@ mekanismen bak "fryktløshet" i praksis.
   *og* én egen overgangsslide per bolk.
 - Flere av disse punktene kobler direkte til eksisterende commits:
   `2c56a2c` (clippy-opprydding), "LLM-basert"-fotnoter i bodyene,
-  midnatts-debug-klippet (`21b7ff1` "debug: output some logs to
+  debug-klippet Feb 18→19 (`21b7ff1` "debug: output some logs to
   differentiate when code hangs" = tilbakekobling når agenten ikke
   forsto hva som skjedde).
 
@@ -514,10 +519,10 @@ bildene viser (akser, pod-tellinger, stabilitet) og sesjons-hukommelse.
 
 | Bilde | Sannsynlig vindu | Narrativ-anker |
 |---|---|---|
-| `minnebruk-eskalering-feb19-1t.png` | Feb 19 ~22:35-23:35 lokal | 1t etter `d99f656` (streaming-refactor, 21:39). Pods klatrer fortsatt til 180 %, flere restarts — *tuning-deploys* som fulgte refactoren, ikke pre-refactor-tilstand |
+| `minnebruk-eskalering-feb19-1t.png` | Feb 19, senere samme dag | Etter `d99f656` (streaming-refactor). Pods klatrer fortsatt til 180 %, flere restarts — *tuning-deploys* som fulgte refactoren, ikke pre-refactor-tilstand |
 | `ressursbruk-prosent-feb19-1t.png` | Samme vindu | Samme, "% of requested"-view |
-| `kubectl-top-postfix-feb19.png` | Feb 19 ~23:33 lokal | Etter at siste tuning-deploy i kveldsøkten satte seg: 236 m / 943 Mi |
-| `minnebruk-24t-overgang.png` | Feb 19 00:00–24:00 | Kaos kl. 11-15 ≈ pre/under `cb6275f` (15:51, per-group BaseConsumer-eliminering). Stabilitet fra sen kveld ≈ post-`d99f656` (21:39) |
+| `kubectl-top-postfix-feb19.png` | Feb 19, senere samme dag | Etter at siste tuning-deploy satte seg: 236 m / 943 Mi |
+| `minnebruk-24t-overgang.png` | Feb 19 | Kaos tidligere samme dag ≈ pre/under `cb6275f` (per-group BaseConsumer-eliminering). Stabilitet etter at `d99f656` ble deployet |
 | `minnebruk-2dager-stabilt.png` | Feb 19-20 eller 20-21 | Stabiliteten holdt gjennom perf-tuning-dagen Feb 20 |
 
 **Viktig nyanse for talen:** `minnebruk-24t-overgang.png` fanger ikke
@@ -534,21 +539,21 @@ Grunnlag for å i det hele tatt kunne teste mot et stort cluster. En
 enkelt commit, 13 dager før resten.
 
 ```
-6ed01b4 2026-02-06 12:33:06
+6ed01b4 2026-02-06
 added testing env for large cluster setup
 ```
 
-#### Fase 1: Admin API-research på fork (Feb 19 morgen, 08:40-10:28)
+#### Fase 1: Admin API-research på fork (Feb 19, tidligere samme dag)
 
 Arbeid gjort mot `softwaremill/klag-exporter` (før NAV-fork). Dette er
 *opprinnelsen* til Admin API-tilnærmingen, som klag-exporter senere
 får via j-santander/x10an14-nav-fork av rust-rdkafka.
 
 ```
-457c859 2026-02-19 08:40:14
+457c859 2026-02-19
 make base consumer reusable with Arc
 
-2ea717a 2026-02-19 08:57:56
+2ea717a 2026-02-19
 klag-exporter/src/kafka/client.rs
   - Replaced list_consumer_group_offsets() — was using
     committed_offsets() on the shared consumer (which only works for the
@@ -584,18 +589,18 @@ klag-exporter/src/kafka/client.rs
   - Timestamp fetching unaffected — TimestampConsumer is a separate
     component.
 
-0a795fa 2026-02-19 09:06:06
+0a795fa 2026-02-19
 Consumer Pool for Timestamps
   [se /tmp/klag-commits.txt:49-80 for full body — pool-basert
   TimestampConsumer som eliminerer connection-churn]
 
-5c4b237 2026-02-19 09:55:30    copilot review
-9a28343 2026-02-19 09:59:17    fix formatting
-7a741c8 2026-02-19 10:28:46    fixing copilot review
-7e52a60 2026-02-19 10:48:55    Merge PR #45 (testing-large-cluster)
-f7932ac 2026-02-19 10:49:46    chore: release v0.1.15
-d04a401 2026-02-19 09:50:05Z   chore(helm): update chart to 0.1.15
-cca56c4 2026-02-19 11:34:57    Merge PR #47 release-plz
+5c4b237 2026-02-19    copilot review
+9a28343 2026-02-19    fix formatting
+7a741c8 2026-02-19    fixing copilot review
+7e52a60 2026-02-19    Merge PR #45 (testing-large-cluster)
+f7932ac 2026-02-19    chore: release v0.1.15
+d04a401 2026-02-19   chore(helm): update chart to 0.1.15
+cca56c4 2026-02-19    Merge PR #47 release-plz
 ```
 
 #### Fase 2: CI/helm yak-shaving (Feb 16-18)
@@ -608,67 +613,67 @@ testes på ekte cluster.
 
 ```
 Feb 16:
-8d2b5c5 13:18  feat(helm): permit configuration of exporter.performance settings
+8d2b5c5  feat(helm): permit configuration of exporter.performance settings
                (Maybe missed as part of PR #41?)
-63b49b4 13:41  feat(helm): permit configuration of log level
-af1656e 15:17  feat(nais): add docker image
-ff71a73 15:34  feature(helm): deploy helm chart too      (+ sindrerh2)
-e1acdd0 16:09  ci(nix): add cache
-5921761 16:26  fix: use correct SA after it's been made  (+ sindrerh2)
+63b49b4  feat(helm): permit configuration of log level
+af1656e  feat(nais): add docker image
+ff71a73  feature(helm): deploy helm chart too      (+ sindrerh2)
+e1acdd0  ci(nix): add cache
+5921761  fix: use correct SA after it's been made  (+ sindrerh2)
                See nais-io-terraform-modules PR #460
 
 Feb 17 — "GHA sucks"-dag:
-5d58cc0 09:41  fix(helm/docker): set expected tag
-8af9a1c 09:54  fix(ci): remove incorrectly configured steps (TODO: back later)
-71c84bc 09:58  fix(ci): remove leftover erroneus config
-922d23b 10:02  fix(ci/helm): use correct SA name
-b7b10f4 10:05  fix(ci/helm): GHA sucks                    ← dagens tittel
-7c3bf1b 10:22  fix(fasit): track fasit-feature
-a44161e 10:25  fix(fasit): use correct coordinates
-bcb0400 10:31  fix(fasit): explicitly set versions
-df7134a 10:50  fix(ci/fasit): add missing fasit-deploy :facepalm:
-d0d541c 13:28  ci(fasit): use correct runner
-b238e34 13:57  fix(helm): run w/permissible pod configs
-310f026 14:29  fix(helm): set correct name for k8s resources
-22fb5bc 15:38  fix(helm): add missing labels (app=, aiven=enabled for netpols)
-b7ec827 15:47  fix(helm): add missing k8s secrets
-ea84bd1 16:12  fix(helm): enable more required k8s stuff
-77da028 16:23  fix(helm): test more sane defaults
+5d58cc0  fix(helm/docker): set expected tag
+8af9a1c  fix(ci): remove incorrectly configured steps (TODO: back later)
+71c84bc  fix(ci): remove leftover erroneus config
+922d23b  fix(ci/helm): use correct SA name
+b7b10f4  fix(ci/helm): GHA sucks                    ← dagens tittel
+7c3bf1b  fix(fasit): track fasit-feature
+a44161e  fix(fasit): use correct coordinates
+bcb0400  fix(fasit): explicitly set versions
+df7134a  fix(ci/fasit): add missing fasit-deploy :facepalm:
+d0d541c  ci(fasit): use correct runner
+b238e34  fix(helm): run w/permissible pod configs
+310f026  fix(helm): set correct name for k8s resources
+22fb5bc  fix(helm): add missing labels (app=, aiven=enabled for netpols)
+b7ec827  fix(helm): add missing k8s secrets
+ea84bd1  fix(helm): enable more required k8s stuff
+77da028  fix(helm): test more sane defaults
 
 Feb 18:
-5275c7c 11:04  fix(healthcheck): be less conservative (timeouts happen)
-5d31547 10:16  fix(helm): tune Feature.yaml templating
-0fcd001 11:19  fix(helm): templating coordinate error
-37ad3ea 12:47  fix(fasit): allow us to configure resource requests
-5f0a259 13:47  feat(helm): add liveness and readiness probe configurations
-1355e50 14:08  fix(helm): improve handling of cluster and secret name
-ff999b8 14:46  feat(helm): add group whitelist configuration    (+ x10an14-nav)
-b859f4b 15:03  test(fasit/helm): can we manually modify a template?
-62a93a1 15:52  feat(helm): enhance liveness/readiness probe parameters
-c188e02 16:01  fix(helm): increase startupprobes
-04a82e9 16:12  cleanup(helm): remove Feature config w/colliding chart coordinates
+5275c7c  fix(healthcheck): be less conservative (timeouts happen)
+5d31547  fix(helm): tune Feature.yaml templating
+0fcd001  fix(helm): templating coordinate error
+37ad3ea  fix(fasit): allow us to configure resource requests
+5f0a259  feat(helm): add liveness and readiness probe configurations
+1355e50  fix(helm): improve handling of cluster and secret name
+ff999b8  feat(helm): add group whitelist configuration    (+ x10an14-nav)
+b859f4b  test(fasit/helm): can we manually modify a template?
+62a93a1  feat(helm): enhance liveness/readiness probe parameters
+c188e02  fix(helm): increase startupprobes
+04a82e9  cleanup(helm): remove Feature config w/colliding chart coordinates
 ```
 
-#### Fase 2.5: Debug-loop Feb 18/19 midnatt
+#### Fase 2.5: Debug-loop Feb 18→19
 
-Midnatts-klipp akkurat før den store fiksen. Mønster-eksempel: clippy
+Klippet Feb 18→19, akkurat før den store fiksen. Mønster-eksempel: clippy
 + mer logging + "ready-state"-opprydding + "debug: output logs to
 differentiate when code hangs" — dvs. *jeg forstår ikke hvorfor det
 henger, la meg se mer*.
 
 ```
-2c56a2c 2026-02-19 00:08:53
+2c56a2c 2026-02-19
 refactor(clippy): (almost) satisfy clippy w/-W clippy::pedantic
                   -W clippy::nursery -W clippy::unwrap_used
 - this lets me get more familiar w/the code
 - cleans it up a bit
 
-acc9b21 2026-02-19 00:10:54    refactor: remove redundant trace-span fields
-e268a77 2026-02-19 00:11:30    upkeep: ensure we set ready-state until we've got reason not to
-21b7ff1 2026-02-19 00:12:00    debug: output some logs to differentiate when code hangs
+acc9b21 2026-02-19    refactor: remove redundant trace-span fields
+e268a77 2026-02-19    upkeep: ensure we set ready-state until we've got reason not to
+21b7ff1 2026-02-19    debug: output some logs to differentiate when code hangs
 ```
 
-#### Fase 3: Første memory-fix (Feb 19 15:51) — HERO
+#### Fase 3: Første memory-fix (Feb 19) — HERO
 
 Dette er *hvor det snudde*. cb6275f rydder 220 linjer unsafe FFI,
 eliminerer per-group BaseConsumer, går fra `O(concurrent_groups × 25MB)`
@@ -677,7 +682,7 @@ tilnærmingen og til j-santander/x10an14-nav-forken av rust-rdkafka som
 *muliggjorde* den i Rust.
 
 ```
-cb6275f 2026-02-19 15:51:56
+cb6275f 2026-02-19
 fix: eliminate per-group BaseConsumer allocation to resolve memory/CPU exhaustion
 
 klag-exporter's memory and CPU usage grew proportionally with the number
@@ -730,17 +735,17 @@ kafka-lag-exporter's behavior.
 This commit was based on work performed by an LLM.
 ```
 
-#### Fase 4: Streaming refactor (Feb 19 17:25–21:39) — HERO
+#### Fase 4: Streaming refactor (Feb 19, senere samme dag) — HERO
 
 cb6275f holdt, men ikke nok for det virkelig store clusteret. d99f656
 gjør det om fra "materialize alt, så prosesser" til "stream per gruppe,
 mest N in-flight".
 
 ```
-b2477a7 2026-02-19 17:25:50    fix: double-free
-bcbccae 2026-02-19 18:09:20    fix: move spammy output from debug to trace
+b2477a7 2026-02-19    fix: double-free
+bcbccae 2026-02-19    fix: move spammy output from debug to trace
 
-d99f656 2026-02-19 21:39:09
+d99f656 2026-02-19
 refactor: streaming pipeline to eliminate memory exhaustion on large clusters
 
 Monitoring clusters with 4-10k topics and 10k+ consumer groups caused
@@ -782,7 +787,7 @@ Syv commits på én dag, inkl. den 12-punkts-store 107b997 og den
 forferdelige silent-data-loss-buggen 4e2d9e3.
 
 ```
-107b997 2026-02-20 13:37:18
+107b997 2026-02-20
 fix: resolve large-cluster performance bugs and harden metrics pipeline
   [12-punkts forklaring, se /tmp/klag-commits.txt:381-494 for full body]
   Høydepunkter:
@@ -808,7 +813,7 @@ fix: resolve large-cluster performance bugs and harden metrics pipeline
   Tester: 57 passing, 0 clippy warnings
   Co-Authored-By: @sindrerh2
 
-4e2d9e3 2026-02-20 15:41:22
+4e2d9e3 2026-02-20
 fix: add Consumer::fetch_watermarks fallback for unresolved list_offsets results
 
 The kafka_consumergroup_group_lag metric was persistently reporting 0
@@ -869,12 +874,12 @@ Offset::Offset(n>=0). Same root-cause potential for committed offsets.
 
 This commit is based on work done by an LLM.
 
-3520aa8 2026-02-20 16:26:06    fix(helm): remove dead/useless configuration knob; less insane defaults
-b14e5a0 2026-02-20 16:42:48    upkeep: add some more timing data
-bbe4fe0 2026-02-20 17:43:43    fix: batch chunks in parallel to avoid sequential I/O delay
-5d3c0ed 2026-02-20 18:17:11    test: replace several tests w/property-based tests
+3520aa8 2026-02-20    fix(helm): remove dead/useless configuration knob; less insane defaults
+b14e5a0 2026-02-20    upkeep: add some more timing data
+bbe4fe0 2026-02-20    fix: batch chunks in parallel to avoid sequential I/O delay
+5d3c0ed 2026-02-20    test: replace several tests w/property-based tests
 
-5760504 2026-02-20 20:03:04
+5760504 2026-02-20
 perf: add negative caching and cross-group dedup for timestamp fetches
 
 Production logs showed stream_metrics_ms=6047 (93% of cycle time) with
@@ -919,8 +924,8 @@ Expected impact: 255 Kafka fetches → 82 per cycle (68% reduction).
 
 This commit is based on work fram an LLM.
 
-fd41a14 2026-02-20 20:42:34    upkeep: tune logging, make it JSON for monitoring
-318d46d 2026-02-20 21:14:55    fix: reduce excessive cache-eviction
+fd41a14 2026-02-20    upkeep: tune logging, make it JSON for monitoring
+318d46d 2026-02-20    fix: reduce excessive cache-eviction
 ```
 
 #### Fase 6: librdkafka FFI-helvete (Feb 23-25) — Bolk 2-material
@@ -931,11 +936,11 @@ kveler tokio, SIGSEGV fra C-tråder som ikke kan fanges fra Rust,
 og til slutt en fix som *begrenser concurrency mot C-lagene*.
 
 ```
-d68bb0c 2026-02-23 14:32:12
+d68bb0c 2026-02-23
 fix: avoid librdkafka double-free upon program shutdown
   (Co-Authored-By: @sindrerh2. LLM-basert.)
 
-d03f788 2026-02-23 15:08:55
+d03f788 2026-02-23
 fix: reduce memory growth from pool consumers, allocator fragmentation,
      and Vec reallocation
 
@@ -968,7 +973,7 @@ fix: reduce memory growth from pool consumers, allocator fragmentation,
 
   Co-Authored-By: @sindrerh2. LLM-basert.
 
-e09a57d 2026-02-24 10:52:06
+e09a57d 2026-02-24
 fix: prevent readiness probe timeouts caused by blocking FFI on async runtime
 
 list_consumer_groups() and fetch_metadata() call synchronous librdkafka
@@ -989,9 +994,9 @@ worker threads.
 
 This commit is based on work by an LLM.
 
-406cf2c 2026-02-24 11:59:00    fix: test dep update for removing double-free sigsev
+406cf2c 2026-02-24    fix: test dep update for removing double-free sigsev
 
-85df581 2026-02-24 12:59:55
+85df581 2026-02-24
 feat: install SIGSEGV signal handler for crash-site backtraces
 
 Runtime SIGSEGV crashes produce exit code 139 with no indication of
@@ -1012,7 +1017,7 @@ UB inside a signal handler. Raw libc::write(fd=2) is async-signal-safe.
 
 This commit is based on work by an LLM.
 
-af00152 2026-02-24 14:49:13    ← 1t 50m senere
+af00152 2026-02-24    ← senere samme dag
 Revert "feat: install SIGSEGV signal handler for crash-site backtraces"
 
 The signals are blocked in the C-level librdkafka library, rev
@@ -1023,7 +1028,7 @@ This reverts commit 85df5819d56a9a0c71e7771797420671242f5222.
   "Jeg tør å installere en signal handler og revert-e den når det ikke
   virker — fordi verktøyene mine forteller meg at det ikke virker."
 
-a30f0d9 2026-02-24 14:58:15
+a30f0d9 2026-02-24
 fix: bound concurrent describe_consumer_groups batches to prevent SIGSEGV
 
 The process crashes with SIGSEGV (exit 139) during
@@ -1044,7 +1049,7 @@ internal queues.
 
 This commit is based on work by an LLM.
 
-0791d3e 2026-02-25 10:19:39
+0791d3e 2026-02-25
 fix: reduce timeout-thundering-herd load
 
 So as to avoid librdkafka (C lib) sigsegv (139 return code) when doing
@@ -1058,11 +1063,11 @@ This commit is based on work done by an LLM.
 1. **Yak-shaving dominerer** (Feb 16-18): 30+ helm/CI/fasit-commits
    før den første tekniske kjerne-fiksen landet. Ikke blameverdig —
    bare realistisk. Publikum skal kjenne seg igjen.
-2. **Midnatts-klippe Feb 18→19** (00:08-00:12): clippy + logging +
+2. **Klippet Feb 18→19**: clippy + logging +
    "ready-state" + "debug: logs to differentiate when code hangs".
    Klassisk "jeg forstår ikke, la meg se mer". Gode tilbakekoblinger
    = kommer seg ut av dette raskere.
-3. **Hero-par-dagen Feb 19** (15:51 + 21:39): cb6275f og d99f656 er
+3. **Hero-par-dagen Feb 19**: cb6275f og d99f656 er
    *to forskjellige fikser* til overlappende symptomer. Den første
    fjerner per-group-allokering, den andre slutter å materialisere
    alt i minnet. Uten tilbakekobling fra kompilator + tester hadde

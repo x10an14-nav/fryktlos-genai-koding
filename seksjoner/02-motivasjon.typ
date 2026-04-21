@@ -4,6 +4,8 @@
 
 == Hva er "lag" metrikken?
 
+#sticker("1f914", anchor: top + right, dx: -1em, dy: 0.8em, angle: 14deg, size: 2.8em)
+
 #align(center + horizon)[
   #text(size: 1.2em)[
     Vi trenger metrikker som informerer hvor langt *etterslep* \
@@ -46,15 +48,17 @@
 ]
 
 #speaker-note[
-  Rammesett kort: dynamisk skalering + varsling forutsetter at vi
-  faktisk vet hvor mye etterslep det er på Kafka-topics-ene.
-  Tre konkrete bruk: HPA (pod-count som funksjon av lag),
-  feilkø-overvåkning (henger meldinger fast?), og varsling til
-  team-et før SLA brister. Alt står og faller på en pålitelig
-  lag-exporter.
+  *[\~80s → 05:05]*
+
+  - HPA, feilkø, varsling
+
+  - Alt står og faller på pålitelig lag-exporter
 ]
 
 == klag-exporter
+
+#sticker("2620", anchor: top + left, dx: 2em, dy: 2.8em, angle: -18deg, size: 2.4em)
+#sticker("1f525", anchor: top + right, dx: -2.2em, dy: 2.5em, angle: 12deg, size: 2.6em)
 
 #align(center + horizon)[
   #grid(
@@ -72,7 +76,7 @@
       #align(left)[
         #block(width: 17em)[
           - Scala (JVM)
-            - arkivert jan. 2024
+            - siste commit jan. 2023, nå arkivert
           - Andre JVM? (#gh("lightbend/kafka-lag-exporter", code: true) — forløperen)
             - like forlatt
           - Go? (#gh("danielqsj/kafka_exporter", code: true), #gh("linkedin/Burrow", code: true))
@@ -92,12 +96,13 @@
       #set text(size: 0.85em)
       #align(left)[
         #block(width: 17em)[
-          - Rust -> godt skussmål på ytelse, virket lovende
+          - Rust
+            - godt skussmål ref ytelse
             - mer nylig vedlikeholdt enn mye annet
-          - #gh("confluentinc/librdkafka", code: true)
-            - vedlikeholdt av Kafka's utviklere
-            - lang og lovende fartstid (\~14 år)
-            - aktiv utvikling
+            - Bruker #gh("confluentinc/librdkafka", code: true)
+              - vedlikeholdt av Kafka's utviklere
+              - lang og lovende fartstid (\~14 år)
+              - fortsatt under utvikling
         ]
       ]
     ],
@@ -105,20 +110,22 @@
 ]
 
 #speaker-note[
-  seglo/kafka-lag-exporter var det vi hadde — men den hadde nettopp
-  blitt arkivert (jan. 2024), og var knapt vedlikeholdt før det
-  heller. Vi så på andre JVM-alternativer først — nærmest instinktivt,
-  siden det var der den forrige løsningen lå. De var enten like
-  forlatte, eller for nye til at vi turte å satse på dem. Golang hadde noen
-  alternativer, men de brukte et Kafka-klient-bibliotek med
-  minne/ressurs-ineffektiv consumer-group-håndtering — noe vi
-  senere selv skulle merke. softwaremill sin Rust-implementasjon
-  bygget på `librdkafka` (C, battletested) og hadde lovende
-  ytelsesskussmål. Det var den jeg valgte å adoptere. Derfra
-  starter case-studien.
+  *[\~60s → 06:05]*
+
+  - seglo: arkivert jan 2024, knapt vedlikeholdt før
+
+  - JVM-alternativer: forlatte eller for nye
+
+  - Go: ineffektiv CG-håndtering
+
+  - softwaremill (Rust + librdkafka): valgt
 ]
 
 == Hvorfor GenAI, da?
+
+#sticker("1f631", anchor: bottom + left, dx: 13em, dy: -2em, angle: 8deg, size: 2.8em, mirror: true)
+#sticker("1f389", anchor: bottom + right, dx: -1.5em, dy: -1em, angle: 18deg, size: 3em)
+#sticker("1f4a5", anchor: bottom + left, dx: 1em, dy: -1.2em, angle: -22deg, size: 2.6em)
 
 #align(center + horizon)[
   #set text(size: 1.2em)
@@ -130,8 +137,8 @@
           - \~5 topics
       - nais har derimot kafkaklynger med *rundt omkring*
         -  1 429 topics
-        - benytttet av over 772 apper
-          - *klag-exporter* (rust) -> taklet dette dårlig
+        - benyttet av over 772 apper
+          - selv *klag-exporter* (rust) -> taklet dette dårlig
     ]
   ]
 
@@ -145,17 +152,19 @@
     text(size: 1.6em, fill: nav-red, weight: "bold")[32+ GiB],
     text(size: 1.6em, fill: nav-red, weight: "bold")[→],
     text(size: 1.6em, fill: nav-red, weight: "bold")[\<1 GiB],
-    text(size: 0.8em, style: "italic")[første forsøk],
+    text(size: 0.8em, style: "italic")[tidlig forsøk],
     [],
     text(size: 0.8em, style: "italic")[etter (GenAI) refaktorering],
   )
 ]
 
 #speaker-note[
-  Retorisk oppfølging: «Og dette var problematisk fordi…?» La
-  tallene henge et øyeblikk. Poenget er ikke at publikum skal
-  regne — de skal *føle* gapet mellom dev-miljøet og produksjons-
-  skalaen. Det er her "derfor måtte jeg inn i koden" blir
-  selvforklarende. Leder rett inn i Bolk 1.
+  *[\~55s → 07:00]*
+
+  - La tallene henge et øyeblikk
+
+  - Publikum skal føle gapet dev vs prod
+
+  - Leder inn i bolk 1
 ]
 

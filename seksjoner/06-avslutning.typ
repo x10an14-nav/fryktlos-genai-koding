@@ -4,6 +4,9 @@
 
 == Hva GenAI gav meg
 
+#sticker("1f4aa", anchor: top + right, dx: -1em, dy: 0.8em, angle: 14deg, size: 3em)
+#sticker("1f916", anchor: bottom + left, dx: 1em, dy: -1em, angle: -12deg, size: 2.4em)
+
 #align(horizon)[
   #set text(size: 0.95em)
 
@@ -13,16 +16,15 @@
     row-gutter: 0.9em,
     text(weight: "bold", fill: nav-red)[Store refaktoreringer —],
     [`BaseConsumer` → `AdminClient`, streaming pipeline, \
-    jemalloc som allocator. Hver enkelt var én kveld med \
-    agenten; uten: sannsynligvis ikke påbegynt.],
+    `jemalloc` som allocator. _Uten_ agenten: sannsynligvis *ikke* påbegynt.],
     text(weight: "bold", fill: nav-red)[Arkeologi i ukjent terreng —],
-    [`sigfillset` i 150k linjer `librdkafka`. Admin API i \
-    j-santander-forken. glibc-fragmenterings-mekanikken. \
-    Veiviser, ikke ekspert — men veiviseren var nok.],
+    [`sigfillset()` *innimellom* 150k linjer `librdkafka`.
+    *Utvikle* Admin API i `j-santander`-forken. *Forstå* `glibc`-fragmenterings-mekanikken. \
+    _Veiviser, ikke ekspert_ — men det *holdt*.],
     text(weight: "bold", fill: nav-red)[Rotårsaks-analyse fra data —],
-    [93 % av cycle i timestamp-henting. Minne × consumer \
+    [*93%* av tidsbruk i timestamp-henting. Minne × consumer \
     groups som dominerende allokering. `Offset::End`-sentinel \
-    som maskerte reell lag. Hypoteser jeg kunne teste raskt.],
+    som maskerte reell lag. Hypoteser jeg kunne utforske raskt.],
   )
 
   #v(1em)
@@ -36,13 +38,17 @@
 ]
 
 #speaker-note[
-  TODO: revider etter formatbeslutning. Payoff-linjen er forsøk på å
-  knytte de to trådene sammen (sikringsteknikk → gevinst) før vi går
-  inn i "Det vi har vært gjennom". Vurder om den skal flyttes dit
-  i stedet.
+  *[\~55s → 24:00]*
+
+  - Tre kategorier: store refaktoreringer, arkeologi i ukjent terreng, rotårsak fra data
+
+  - Payoff: sikringsteknikk gjorde agent trygg, agent gjorde arbeidet mulig
 ]
 
 == Det vi har vært gjennom
+
+#sticker("1f44d", anchor: top + right, dx: -1em, dy: 0.8em, angle: 12deg, size: 2.8em)
+#sticker("1f4dd", anchor: bottom + left, dx: 1em, dy: -1em, angle: -10deg, size: 2.4em)
 
 #align(horizon)[
   #grid(
@@ -50,14 +56,11 @@
     column-gutter: 1em,
     row-gutter: 0.8em,
     text(weight: "bold", fill: nav-red)[Bolk 1 —],
-    [Rust-kompilator + typesystem (sumtyper, exhaustive matching)
-    fanger mye av det LLM-en roter med. Tester & logging fanger resten.],
+    [Rusts kompilator + typesystem *fanger* mye av det LLM-en roter med. Tester & logging fanger resten.],
     text(weight: "bold", fill: nav-red)[Bolk 2 —],
-    [Nix gjør reproducerbart bygg til _default_. `JEMALLOC_OVERRIDE`
-    og patched `librdkafka` blir én linje hver.],
+    [Nix gjør reproducerbart bygg til *default*. `JEMALLOC_OVERRIDE` og patched `rust-rdkafka` blir én linje hver.],
     text(weight: "bold", fill: nav-red)[Bolk 3 —],
-    [Med feedback loops som holder, tør man å forke 14 år gammel
-    C-kode — og revertere når det ikke virker.],
+    [Med feedback loops som holder, *tør* man å gå inn i _14 år gammel C-kode_ — og *revertere* når det ikke virker.],
   )
 
   #v(1.5em)
@@ -76,7 +79,20 @@
   ]
 ]
 
+#speaker-note[
+  *[\~30s → 24:30]*
+
+  - 30 sek. Stikkord, ikke detaljer.
+
+  - Payoff-linjen: pust før/etter.
+]
+
 == Takk
+
+#sticker("1f389", anchor: top + left, dx: 0.8em, dy: 0.8em, angle: -18deg, size: 3.6em)
+#sticker("1f389", anchor: top + right, dx: -1em, dy: 0.8em, angle: 18deg, size: 3.6em)
+#sticker("1f44f", anchor: bottom + left, dx: 1em, dy: -1em, angle: -10deg, size: 2.8em)
+#sticker("1f44f", anchor: bottom + right, dx: -1em, dy: -1em, angle: 10deg, size: 2.8em)
 
 #align(center + horizon)[
   #text(size: 2.5em, weight: "bold", fill: nav-red)[Takk!]

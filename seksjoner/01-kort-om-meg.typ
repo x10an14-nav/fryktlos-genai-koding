@@ -2,6 +2,9 @@
 
 = Kort om meg
 
+#sticker("1f44b", anchor: top + right, dx: -1em, dy: 1.2em, angle: 15deg, size: 3.2em)
+#sticker("1f9d1-200d-1f4bb", anchor: bottom + left, dx: 0.8em, dy: -1em, angle: -8deg, size: 2.8em)
+
 #align(center + horizon)[
   #text(size: 1.4em, weight: "bold")[Hvem er jeg?]
 
@@ -36,6 +39,9 @@
 ]
 
 == Teamet
+
+#sticker("1f389", anchor: top + left, dx: 0.5em, dy: 0.8em, angle: -18deg, size: 2.6em)
+#sticker("1f44f", anchor: bottom + right, dx: -1em, dy: -0.8em, angle: 10deg, size: 2.4em)
 
 // Avatars er anonymisert: filnavn er sekvensielle numre, ingen
 // identifiserende strenger i kildekoden.
@@ -100,12 +106,16 @@
 ]
 
 #speaker-note[
-  Muntlig: «Her er alle vi i nais-teamet. Kanskje dere kjenner
-  noen av oss igjen? Vet at enkelte av oss er mer aktive/profilerte
-  enn andre!»
+  *[\~45s → 02:45]*
+
+  - Nais-teamet
+
+  - «Kjenner dere noen av oss igjen?»
 ]
 
 == Hva _er_ nais?
+
+#sticker("1f3af", anchor: top + left, dx: 0.6em, dy: 0.8em, angle: -12deg, size: 2.6em)
 
 #align(center + horizon)[
   #text(size: 1.3em, weight: "bold")[Hva _er_ nais?]
@@ -145,11 +155,13 @@
 ])
 
 #speaker-note[
-  Poenget her er ikke å lese opp hele lista — vise at nais er en
-  reell plattform med bredt nedslagsfelt i offentlig sektor, ikke
-  en intern NAV-ting. Sentral setningen fra nais.io: «lett å gjøre
-  rett». Brukerlista er verifisert mot nais.io sin Brukere.svelte-
-  komponent (Nav, SSB, LDIR=Landbruksdirektoratet, Atil=
-  Arbeidstilsynet). Hvis nais.io legger til flere tenanter, kan
-  lista utvides.
+  *[\~60s → 03:45]*
+
+  - Ikke les lista
+
+  - Reell plattform, bredt nedslagsfelt i offentlig sektor
+
+  - «Lett å gjøre rett»
+
+  - Brukere: Nav, SSB, LDIR, Atil (verifisert mot nais.io)
 ]

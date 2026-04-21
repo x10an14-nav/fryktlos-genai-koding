@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" font-family="sans-serif">
+  <defs>
+    <!-- Fadet bånd for å antyde kontinuerlig flow inn/ut av køen -->
+    <linearGradient id="flow" x1="0%" x2="100%">
+      <stop offset="0%"   stop-color="#e8e8e8" stop-opacity="0"/>
+      <stop offset="10%"  stop-color="#e8e8e8" stop-opacity="1"/>
+      <stop offset="90%"  stop-color="#e8e8e8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#e8e8e8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rør-bånd bak boksene -->
+  <rect x="0" y="70" width="800" height="70" fill="url(#flow)"/>
+
+  <!-- Lag-bracket + label -->
+  <g stroke="#C30000" stroke-width="2" fill="none">
+    <path d="M 325 60 L 325 45 L 715 45 L 715 60"/>
+  </g>
+  <text x="520" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#C30000">lag = 5 meldinger</text>
+
+  <!-- Meldings-bokser med offsets -->
+  <g font-family="monospace" font-size="18">
+    <!-- Leste (nøytral grå) -->
+    <rect x="85"  y="75" width="70" height="60" fill="#fafafa" stroke="#888" stroke-width="1.5"/>
+    <text x="120" y="112" text-anchor="middle" fill="#666">42</text>
+
+    <rect x="165" y="75" width="70" height="60" fill="#fafafa" stroke="#888" stroke-width="1.5"/>
+    <text x="200" y="112" text-anchor="middle" fill="#666">43</text>
+
+    <rect x="245" y="75" width="70" height="60" fill="#fafafa" stroke="#888" stroke-width="1.5"/>
+    <text x="280" y="112" text-anchor="middle" fill="#666">44</text>
+
+    <!-- Uleste = lag (NAV-rødt) -->
+    <rect x="325" y="75" width="70" height="60" fill="#fde5e5" stroke="#C30000" stroke-width="1.5"/>
+    <text x="360" y="112" text-anchor="middle" fill="#C30000">45</text>
+
+    <rect x="405" y="75" width="70" height="60" fill="#fde5e5" stroke="#C30000" stroke-width="1.5"/>
+    <text x="440" y="112" text-anchor="middle" fill="#C30000">46</text>
+
+    <rect x="485" y="75" width="70" height="60" fill="#fde5e5" stroke="#C30000" stroke-width="1.5"/>
+    <text x="520" y="112" text-anchor="middle" fill="#C30000">47</text>
+
+    <rect x="565" y="75" width="70" height="60" fill="#fde5e5" stroke="#C30000" stroke-width="1.5"/>
+    <text x="600" y="112" text-anchor="middle" fill="#C30000">48</text>
+
+    <rect x="645" y="75" width="70" height="60" fill="#fde5e5" stroke="#C30000" stroke-width="1.5"/>
+    <text x="680" y="112" text-anchor="middle" fill="#C30000">49</text>
+  </g>
+
+  <!-- Retnings-hints på sidene -->
+  <text x="30"  y="112" text-anchor="middle" font-size="18" fill="#444">eldre</text>
+  <text x="770" y="112" text-anchor="middle" font-size="18" fill="#444">nyere</text>
+
+  <!-- Pekere under: consumer offset (på 44), log end offset (på 49) -->
+  <g stroke="#222" stroke-width="1.5" fill="none">
+    <line x1="280" y1="150" x2="280" y2="170"/>
+    <line x1="680" y1="150" x2="680" y2="170"/>
+  </g>
+  <g>
+    <text x="280" y="192" text-anchor="middle" font-size="16" fill="#222" font-weight="bold">consumer offset</text>
+    <text x="280" y="214" text-anchor="middle" font-size="15" fill="#333">sist prosessert / lest</text>
+
+    <text x="680" y="192" text-anchor="middle" font-size="16" fill="#222" font-weight="bold">log end offset</text>
+    <text x="680" y="214" text-anchor="middle" font-size="15" fill="#333">nyeste melding</text>
+  </g>
+</svg>
