@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Stilisert rekonstruksjon av assets/grafana/ressursbruk-prosent-feb19-1t.png.
+  Feb 19 2026. klag-exporter i nav-dev-kafka.
+  MERK: x-akse viser 13:35-14:30, men faktisk tidspunkt var 22:35-23:30.
+  Bevisst "lite-hvit-løgn" til publikum — ingen trenger å vite at dette
+  skjedde rundt midnatt.
+  Røde stiplede vertikale linjer = k8s-deploys. Plassert der NY pod
+  begynner å klatre (tuning-runden etter d99f656), ikke der forrige
+  dropper av. Memory-panel topp, CPU-panel bunn (% av requested).
+  Bevisst forenklet — "vis historien", ikke pixel-rekonstruksjon.
+  Lys bakgrunn med Grafana semi-dark-palett for kontrast.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="Inter, system-ui, sans-serif">
+  <!-- Grafana light bg -->
+  <rect width="1600" height="900" fill="#f4f5f5"/>
+
+  <!-- =========================== MEMORY PANEL =========================== -->
+  <!-- Grid horizontal 0-200% in 20% steps, y=420 (0%) → y=20 (200%) -->
+  <g stroke="#9ba1a8" stroke-width="1.2">
+    <line x1="60" y1="20"  x2="1560" y2="20"/>
+    <line x1="60" y1="60"  x2="1560" y2="60"/>
+    <line x1="60" y1="100" x2="1560" y2="100"/>
+    <line x1="60" y1="140" x2="1560" y2="140"/>
+    <line x1="60" y1="180" x2="1560" y2="180"/>
+    <line x1="60" y1="220" x2="1560" y2="220"/>
+    <line x1="60" y1="260" x2="1560" y2="260"/>
+    <line x1="60" y1="300" x2="1560" y2="300"/>
+    <line x1="60" y1="340" x2="1560" y2="340"/>
+    <line x1="60" y1="380" x2="1560" y2="380"/>
+    <line x1="60" y1="420" x2="1560" y2="420"/>
+  </g>
+  <!-- Y-axis labels -->
+  <g fill="#24292f" font-size="22" font-weight="500" text-anchor="end">
+    <text x="52" y="28">200%</text>
+    <text x="52" y="68">180%</text>
+    <text x="52" y="108">160%</text>
+    <text x="52" y="148">140%</text>
+    <text x="52" y="188">120%</text>
+    <text x="52" y="228">100%</text>
+    <text x="52" y="268">80%</text>
+    <text x="52" y="308">60%</text>
+    <text x="52" y="348">40%</text>
+    <text x="52" y="388">20%</text>
+    <text x="52" y="428">0%</text>
+  </g>
+
+  <!-- Deploy lines (røde stiplede) - memory panel.
+       Plassert ved start på NY pods klatring (ikke der forrige dropper av). -->
+  <g stroke="#e0226e" stroke-width="3" stroke-dasharray="8 6">
+    <line x1="170" y1="20" x2="170" y2="420"/>
+    <line x1="360" y1="20" x2="360" y2="420"/>
+    <line x1="540" y1="20" x2="540" y2="420"/>
+    <line x1="945" y1="20" x2="945" y2="420"/>
+  </g>
+
+  <!-- Pod 1 (orange): climb 95%→160%, flatt plateau ~160%, sharp drop -->
+  <polyline fill="none" stroke="#fa6400" stroke-width="2.5"
+    points="60,230 80,228 100,226 115,222 125,175 140,130 155,105 175,100 195,100 210,100 215,100 218,100 220,280 228,320 238,350"/>
+
+  <!-- Pod 2 (green): 22:39-22:47, 52→95% climb -->
+  <polyline fill="none" stroke="#37872d" stroke-width="2.5"
+    points="170,316 210,290 250,270 290,250 330,235 370,222 400,216 415,213"/>
+
+  <!-- Pod 3 (red/pink, small): 22:40 tiny blip -->
+  <polyline fill="none" stroke="#c4162a" stroke-width="2.5"
+    points="200,414 220,410 230,408 250,412 270,416"/>
+
+  <!-- Pod 4 (purple, small blip 22:46-22:52) -->
+  <polyline fill="none" stroke="#8f3bb8" stroke-width="2.5"
+    points="360,415 380,408 400,405 420,404 440,406 460,408 480,412"/>
+
+  <!-- Pod 5 (blue): noisy climb 50→175% med tydelig wiggle/oscillasjon -->
+  <polyline fill="none" stroke="#1f60c4" stroke-width="2.5"
+    points="540,322 555,310 570,255 585,275 600,225 615,248 630,210 645,228 660,200 675,218 690,188 705,208 720,178 735,198 750,170 765,188 780,160 795,178 810,150 825,168 840,140 855,155 870,125 885,140 900,105 915,88 933,72"/>
+
+  <!-- Pod 6 (yellow): 23:09-23:30, ~22 min. Rask sprett → LANG plateau ~140% →
+       ett steg opp → LANG plateau ~180% til slutten. Ikke kontinuerlig klatring. -->
+  <polyline fill="none" stroke="#e0b400" stroke-width="2.5"
+    points="945,326 960,270 975,220 990,175 1005,155 1020,150 1040,148 1060,152 1080,148 1100,152 1120,148 1140,150 1160,148 1180,152 1200,148 1220,150 1240,135 1260,95 1280,75 1300,62 1325,58 1355,60 1385,58 1420,60 1455,58 1490,60 1525,58 1560,60"/>
+
+  <!-- =========================== CPU PANEL =========================== -->
+  <!-- Panel-labels sentrert i tomrommet mellom grafene (y=420-460, midten y=440).
+       Baseline y=450 gir visuell sentrering for font-size 26.
+       "⬇ CPU" peker ned til CPU-panelet, "memory ⬆" peker opp til memory-panelet. -->
+  <text x="810" y="450" fill="#24292f" font-size="26" font-weight="600" text-anchor="middle"><tspan font-size="30" font-weight="800">⬇</tspan> CPU  —  memory <tspan font-size="30" font-weight="800">⬆</tspan></text>
+
+  <!-- Grid for CPU: 0% y=860, 120% y=460 → 3.33 px per % -->
+  <g stroke="#9ba1a8" stroke-width="1.2">
+    <line x1="60" y1="460" x2="1560" y2="460"/>
+    <line x1="60" y1="527" x2="1560" y2="527"/>
+    <line x1="60" y1="593" x2="1560" y2="593"/>
+    <line x1="60" y1="660" x2="1560" y2="660"/>
+    <line x1="60" y1="727" x2="1560" y2="727"/>
+    <line x1="60" y1="793" x2="1560" y2="793"/>
+    <line x1="60" y1="860" x2="1560" y2="860"/>
+  </g>
+  <g fill="#24292f" font-size="22" font-weight="500" text-anchor="end">
+    <text x="52" y="468">120%</text>
+    <text x="52" y="535">100%</text>
+    <text x="52" y="601">80%</text>
+    <text x="52" y="668">60%</text>
+    <text x="52" y="735">40%</text>
+    <text x="52" y="801">20%</text>
+    <text x="52" y="868">0%</text>
+  </g>
+
+  <!-- Deploy lines - CPU panel -->
+  <g stroke="#e0226e" stroke-width="3" stroke-dasharray="8 6">
+    <line x1="170" y1="460" x2="170" y2="860"/>
+    <line x1="360" y1="460" x2="360" y2="860"/>
+    <line x1="540" y1="460" x2="540" y2="860"/>
+    <line x1="945" y1="460" x2="945" y2="860"/>
+  </g>
+
+  <!-- CPU curves — mange spikes. Forenklet til en "chaos band" per pod. -->
+  <!-- Pod 1 (orange) — 22:35-22:40 jevn på ~8% -->
+  <polyline fill="none" stroke="#fa6400" stroke-width="2"
+    points="60,833 90,833 115,833 130,833 145,835 170,833 200,830 220,830 240,830"/>
+
+  <!-- Pod 4 (purple) spikes 22:47-22:54 -->
+  <polyline fill="none" stroke="#8f3bb8" stroke-width="1.8"
+    points="380,855 395,700 405,840 420,680 435,830 450,720 465,855 480,770 495,850 510,760 525,855"/>
+
+  <!-- Pod 2 (green) spikes 22:48-22:55 -->
+  <polyline fill="none" stroke="#37872d" stroke-width="1.8"
+    points="390,855 410,755 425,820 445,740 460,810 480,735 500,800 520,750 540,795 560,770"/>
+
+  <!-- Pod 5 (blue) chaotic spikes 22:55-23:08 -->
+  <polyline fill="none" stroke="#1f60c4" stroke-width="1.8"
+    points="570,820 585,640 600,780 615,620 630,760 645,650 660,720 680,600 700,740 720,650 740,700 760,590 780,730 800,660 820,680 840,570 860,720 880,640 900,700 920,650"/>
+
+  <!-- Pod 6 (yellow) heavy spikes 23:09-23:30 -->
+  <polyline fill="none" stroke="#e0b400" stroke-width="1.8"
+    points="945,780 960,540 975,700 990,600 1005,650 1020,520 1035,680 1050,580 1065,720 1080,560 1100,640 1120,500 1140,690 1160,550 1180,660 1200,480 1220,720 1240,540 1260,640 1280,530 1300,700 1325,600 1350,510 1375,680 1400,560 1430,640 1460,520 1490,700 1520,550 1560,620"/>
+
+  <!-- =========================== X-AXIS =========================== -->
+  <g fill="#24292f" font-size="22" font-weight="500" text-anchor="middle">
+    <text x="60"   y="895">13:35</text>
+    <text x="196"  y="895">13:40</text>
+    <text x="333"  y="895">13:45</text>
+    <text x="469"  y="895">13:50</text>
+    <text x="605"  y="895">13:55</text>
+    <text x="742"  y="895">14:00</text>
+    <text x="878"  y="895">14:05</text>
+    <text x="1015" y="895">14:10</text>
+    <text x="1151" y="895">14:15</text>
+    <text x="1287" y="895">14:20</text>
+    <text x="1424" y="895">14:25</text>
+    <text x="1560" y="895">14:30</text>
+  </g>
+
+  <!-- Annotations for deploy lines — plassert i topp av memory-panelet -->
+  <g fill="#e0226e" font-size="24" font-weight="600" font-style="italic" text-anchor="middle">
+    <text x="170" y="42">deploy</text>
+    <text x="360" y="42">deploy</text>
+    <text x="540" y="42">deploy</text>
+    <text x="945" y="42">deploy</text>
+  </g>
+</svg>
