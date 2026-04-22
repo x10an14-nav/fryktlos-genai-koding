@@ -7,7 +7,7 @@
 #import themes.stargazer: *
 
 #let nav-red = rgb("#C30000")
-#let repo-url = "github.com/x10an14/fryktlos-genai-koding"
+#let repo-url = "github.com/x10an14-nav/fryktlos-genai-koding"
 
 // Hjelper for GitHub-repo-lenker i slide-innhold. Bevarer arvet
 // tekstfarge (via eksplisitt `text(fill: ...)` rundt `it` — temaets

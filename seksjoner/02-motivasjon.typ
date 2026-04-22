@@ -33,7 +33,7 @@
     column-gutter: 1.5em,
     align: (center + horizon, center + horizon, center + horizon),
     [
-      #text(weight: "bold", fill: nav-red)[HPA-skalering] \
+      #text(weight: "bold", fill: nav-red)[HPA] \
       #text(size: 0.85em)[automatisk lastskalering]
     ],
     [

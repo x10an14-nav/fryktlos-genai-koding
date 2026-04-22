@@ -107,7 +107,7 @@
 
 == Effektiv arkeolog
 
-#sticker("1f50d", anchor: top + right, dx: -1em, dy: 0.8em, angle: 16deg, size: 3em)
+#sticker("1f4a1", anchor: top + right, dx: -1em, dy: 0.8em, angle: 16deg, size: 3em)
 #sticker("1f916", anchor: bottom + left, dx: 1em, dy: -1em, angle: -10deg, size: 2.6em)
 
 #align(horizon)[
@@ -141,7 +141,7 @@
 #speaker-note[
   *[\~45s → 23:05]*
 
-  - Tre kategorier bolk 3: navigering (`sigfillset` i 150k linjer C), fork-funn (j-santander rust-rdkafka Admin API), raske hypoteser (concurrency-grense mot C)
+  - Tre kategorier bolk 3: navigering (`sigfillset()` i 150k linjer C), fork-funn (j-santander rust-rdkafka Admin API), raske hypoteser (concurrency-grense mot C)
 
   - Siste: fungerte på første forsøk
 ]

@@ -38,16 +38,12 @@
     ],
   )
 
-  #v(1em)
-
   #align(center)[
-    #text(size: 1.4em, weight: "bold", fill: nav-red)[
-      220 linjer `unsafe` FFI fjernet. Null `unsafe` blocks igjen.
+    #text(size: 1.15em, weight: "bold", fill: nav-red)[
+      220 linjer `unsafe` FFI#footnote[FFI (Foreign Function Interface): mekanismen for interop mellom språk — bindingen mot en ABI (f.eks. C-ABI).] fjernet. Null `unsafe` blocks igjen.
     ]
 
-    #v(0.3em)
-
-    #text(size: 0.85em, style: "italic")[O(concurrent_groups × 25 MB) → O(1)]
+    #text(size: 0.8em, style: "italic")[O(concurrent_groups × 25 MB) → O(1)]
   ]
 ]
 
@@ -200,7 +196,7 @@
       #text(size: 0.75em, style: "italic")[`b2477a7` · 17:25]
     ],
     [OK — blindt over FFI-grensen],
-    [*panic + stacktrace* i testmiljø],
+    [*panic() + stacktrace* i testmiljø],
     [
       *Silent data loss* \
       #text(size: 0.75em, style: "italic")[`4e2d9e3` · neste dag 15:41]
@@ -259,7 +255,7 @@
 == Detektivrydderen
 
 #sticker("1f3c6", anchor: top + right, dx: -1em, dy: 0.8em, angle: 15deg, size: 3.4em)
-#sticker("1f9f9", anchor: bottom + left, dx: 0.8em, dy: -1em, angle: -10deg, size: 2.4em)
+#sticker("1f575-fe0f-200d-2640-fe0f", anchor: bottom + left, dx: 1.8em, dy: -1.85em, angle: -10deg, size: 3.7em)
 
 #align(horizon)[
   #set text(size: 0.95em)

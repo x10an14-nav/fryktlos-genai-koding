@@ -30,7 +30,7 @@
 
   - Crash på librdkafkas interne broker-tråder
 
-  - `sigfillset` maskerer alle signaler, umulig å fange fra handler
+  - `sigfillset()` maskerer alle signaler, umulig å fange fra handler
 
   - Setter opp neste slide
 ]
@@ -66,7 +66,7 @@
 
   - tikv-jemalloc-sys bundler 5.3.0, feiler å bygge med GCC 15 (`strerror_r`)
 
-  - Nix: pek på pkgs.jemalloc, reproducerbart, uten fork
+  - Nix: pek på pkgs.jemalloc, reproduserbart, uten fork
 ]
 
 == Jeg turte å prøve
@@ -103,7 +103,7 @@
 
   #v(0.5em)
 
-  Reproducerbart bygg + git = _turte å prøve_, _turte å revertere_.
+  Reproduserbart bygg + git = _turte å prøve_, _turte å revertere_.
 ]
 
 #speaker-note[
@@ -124,7 +124,7 @@
 #speaker-note[
   *[\~20s → 18:25]*
 
-  - 🔒 ny: reproducerbart bygg → trygg revert
+  - 🔒 ny: reproduserbart bygg → trygg revert
 
   - Framhev kun det nye
 ]
@@ -150,7 +150,7 @@
     text(weight: "bold", fill: nav-red)[Fryktløs utforskning —],
     [
       Kræsj uten fornuftig feilkode/feilmelding.
-      SIGSEGV-handler med `libc::backtrace` (1) ble installert, deretter (2) fjernet \~2t senere, når (3) det viste seg at `librdkafka` blokkerer signaler via `sigfillset`.
+      SIGSEGV-handler med `libc::backtrace` (1) ble installert, deretter (2) fjernet \~2t senere, når (3) det viste seg at `librdkafka` blokkerer signaler via `sigfillset()`.
       Agenten (4) fant allerede eksisterende #gh("confluentinc/librdkafka", path: "issues/4571", label: [issue \#4571]).
     ],
   )

@@ -48,7 +48,7 @@
 == Det vi har vært gjennom
 
 #sticker("1f44d", anchor: top + right, dx: -1em, dy: 0.8em, angle: 12deg, size: 2.8em)
-#sticker("1f4dd", anchor: bottom + left, dx: 1em, dy: -1em, angle: -10deg, size: 2.4em)
+#sticker("1f4dd", anchor: bottom + left, dx: 1em, dy: -4.5em, angle: -10deg, size: 2.4em)
 
 #align(horizon)[
   #grid(
@@ -58,7 +58,7 @@
     text(weight: "bold", fill: nav-red)[Bolk 1 —],
     [Rusts kompilator + typesystem *fanger* mye av det LLM-en roter med. Tester & logging fanger resten.],
     text(weight: "bold", fill: nav-red)[Bolk 2 —],
-    [Nix gjør reproducerbart bygg til *default*. `JEMALLOC_OVERRIDE` og patched `rust-rdkafka` blir én linje hver.],
+    [Nix gjør reproduserbart bygg til *default*. `JEMALLOC_OVERRIDE` og patched `rust-rdkafka` blir én linje hver.],
     text(weight: "bold", fill: nav-red)[Bolk 3 —],
     [Med feedback loops som holder, *tør* man å gå inn i _14 år gammel C-kode_ — og *revertere* når det ikke virker.],
   )

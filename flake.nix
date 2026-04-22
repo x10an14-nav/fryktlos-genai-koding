@@ -43,7 +43,7 @@
           # try to execve the whole string as one filename.
           program = toString (
             pkgs.writeShellScript "presenter-lysark" ''
-              exec ${lib.getExe pkgs.pdfpc} ${inputs.self.packages.${pkgs.system}.lysark}
+              exec ${lib.getExe pkgs.pdfpc} -1 0x069c ${inputs.self.packages.${pkgs.system}.lysark}
             ''
           );
         };
