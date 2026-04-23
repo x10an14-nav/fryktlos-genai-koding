@@ -40,7 +40,7 @@
   )
 })
 
-#let repo-url = "github.com/x10an14/fryktlos-genai-koding"
+#let repo-url = "github.com/x10an14-nav/fryktlos-genai-koding"
 
 // Toggle for å bygge med speaker notes synlig. Settes via
 //   typst compile --input notes=true slides.typ ...
