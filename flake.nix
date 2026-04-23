@@ -43,7 +43,14 @@
           # try to execve the whole string as one filename.
           program = toString (
             pkgs.writeShellScript "presenter-lysark" ''
-              exec ${lib.getExe pkgs.pdfpc} -1 0x069c ${inputs.self.packages.${pkgs.system}.lysark}
+              set -e
+              root="$(${lib.getExe pkgs.git} rev-parse --show-toplevel)"
+              ${lib.getExe (typstWithPkgsFor pkgs)} query \
+                --root "$root" \
+                --field value --one \
+                "$root/slides.typ" '<pdfpc-file>' \
+                > "$root/slides.pdfpc"
+              exec ${lib.getExe pkgs.pdfpc} -1 0x069c "$root/slides.pdf"
             ''
           );
         };

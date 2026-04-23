@@ -136,3 +136,12 @@ tidstyver å hoppe over.
   er zathura med auto-reload.
 - `ctrl+r` i zathura = recolor (dark-mode toggle), **ikke** reload.
   Reload er automatisk.
+
+## Ikke lag parallelle byggeløyper
+
+Når du blir bedt om å eksponere et eksisterende artefakt via nytt
+verktøy/wrapper: gjenbruk den eksisterende produksjonsløypen. Ikke
+lag en ny, parallell derivation/kommando som produserer «samme»
+artefakt — den vil før eller siden divergere.
+
+Spør hvis gjenbruk ikke er åpenbart mulig.
